@@ -6,7 +6,6 @@ router.get('/', function(req, res, next) {
   res.send('Running');
 });
 
-console.log(database)
 
 
 module.exports = router;

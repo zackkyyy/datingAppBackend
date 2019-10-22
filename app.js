@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var admin = require ("firebase-admin")
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -10,6 +11,26 @@ var usersRouter = require('./routes/users');
 var app = express();
 
 
+
+var serviceAccount= require('./adminsdk.json')
+admin.initializeApp({
+  credential : admin.credential.cert(serviceAccount),
+  databaseURL : 'http://soviet-hinder.firebaseio.com'
+})
+
+var db = admin.database()
+var ref = db.ref('/server')
+var userRef = ref.child('users')
+
+userRef.update({
+  SSDDS:
+{
+  name: 'dsdsds',
+      admin: true,
+    count: 1
+}
+}
+)
 
 
 

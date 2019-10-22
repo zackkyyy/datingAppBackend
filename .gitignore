@@ -131,7 +131,6 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -169,7 +168,6 @@ typings/
 .nuxt
 
 # react / gatsby
-public/
 
 # vuepress build output
 .vuepress/dist
@@ -188,7 +186,7 @@ public/
 **/*.backup.*
 **/*.back.*
 
-node_modules
+
 bower_componets
 
 *.sublime*
@@ -229,5 +227,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
-
-# End of https://www.gitignore.io/api/vue,node,vuejs,windows,intellij
+/node_modules/
