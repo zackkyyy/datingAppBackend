@@ -4,7 +4,7 @@ let database = require('../DBparser/DbParser.js')
 const userCollectionRef = database.collection('users');
 
 router.route('/').get(function (req,res) {
-    res.send("this is relations router")
+    res.send("this is relations.js router")
 })
 
 router.route('/getMatches/:user_id').get(function (req,res) {

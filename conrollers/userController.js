@@ -46,6 +46,7 @@ const deleteAllUsers =async (req,res) =>{
         val.map((val) => {
             val.delete()
         })
+        res.send('done')
     })
 }
 const getAllUsers = async (req, res)=>{

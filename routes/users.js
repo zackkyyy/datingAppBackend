@@ -11,7 +11,7 @@ router.route('/createTest').post(userController.createUser)
 router.route('/create').post(userController.createUser)
 router.route('/update/:user_id').post(userController.updateUser)
 router.route('/find/:findBy/:searchWord').get(userController.findUser)
-router.route('/deleteAll').post(userController.deleteAllUsers)
+router.route('/deleteAll').get(userController.deleteAllUsers)
 
 
 router.route('/this').get(function (req, res) {

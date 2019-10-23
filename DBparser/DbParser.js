@@ -1,5 +1,4 @@
 let admin = require ("firebase-admin")
-let serviceAccount= require('../adminsdk.json')
 require('dotenv').config()
 
 

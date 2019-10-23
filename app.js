@@ -13,23 +13,13 @@ var app = express();
 
 require('dotenv').config()
 
-// var serviceAccount= require('./adminsdk.json')
-// admin.initializeApp({
-//   credential : admin.credential.cert(serviceAccount),
-//   databaseURL : 'http://soviet-hinder.firebaseio.com'
-// })
-
-
-
-
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/relations', relationsRouter);
+app.use('/relations.js', relationsRouter);
 app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
