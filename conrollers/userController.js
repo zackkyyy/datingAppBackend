@@ -75,7 +75,7 @@ const deleteAllUsers = async (req, res) => {
 const logOut = async (req,res)=>{
     req.session.loggedin= false
     req.session.destroy()
-    res.redirect('/')
+    res.sendStatus(200)
 }
 const validateSignIn = async (req, res) => {
     let found = false;
@@ -86,12 +86,13 @@ const validateSignIn = async (req, res) => {
             snapshot.forEach(doc => {
                 if (doc.data().email === email) {
                     found = true;
-
                     console.log('found')
                     if (validPassword(doc.data().password, password)) {
-                        req.session.user = username
+                        req.session.id = doc.data().id
+                        req.session.username = doc.data().username
                         req.session.loggedin = true
-                        res.send(req.session )
+                        res.sendStatus(200 )
+
                     } else {
                         res.send('password wrong')
                     }
@@ -111,6 +112,9 @@ const validateSignIn = async (req, res) => {
 }
 const getAllUsers = async (req, res) => {
     let tempArray = [];
+    req.session.user = "s"
+    req.session.loggedin = true
+    console.log(req.session)
     userCollectionRef.get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
             // doc.data() is never undefined for query doc snapshots
