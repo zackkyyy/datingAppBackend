@@ -35,7 +35,8 @@ const createUser = async (req, res) => {
         description: (req.body.description || ""),
         title: (req.body.title || ""),
         age: (req.body.age || ""),
-        image: (req.body.image || "")
+        image: (req.body.image || ""),
+        gender : (req.body.gender || "")
     }
 
     userCollectionRef.add(user).then(ref => {
@@ -71,6 +72,11 @@ const deleteAllUsers = async (req, res) => {
         res.send('done')
     })
 }
+const logOut = async (req,res)=>{
+    req.session.loggedin= false
+    req.session.destroy()
+    res.redirect('/')
+}
 const validateSignIn = async (req, res) => {
     let found = false;
     let email = req.body.email
@@ -83,7 +89,9 @@ const validateSignIn = async (req, res) => {
 
                     console.log('found')
                     if (validPassword(doc.data().password, password)) {
-                        res.sendStatus(200)
+                        req.session.user = username
+                        req.session.loggedin = true
+                        res.send(req.session )
                     } else {
                         res.send('password wrong')
                     }
@@ -141,5 +149,6 @@ module.exports = {
     findUser,
     deleteAllUsers,
     getAllUsers,
-    validateSignIn
+    validateSignIn,
+    logOut
 }

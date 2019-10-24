@@ -12,8 +12,8 @@ router.route('/create').post(userController.createUser)
 router.route('/update/:user_id').post(userController.updateUser)
 router.route('/find/:findBy/:searchWord').get(userController.findUser)
 router.route('/deleteAll').get(userController.deleteAllUsers)
-router.route('/validateSignIn').get(userController.validateSignIn)
-
+router.route('/validateSignIn').post(userController.validateSignIn)
+router.route('/logOut').get(userController.logOut)
 
 router.route('/this').get(function (req, res) {
     let subColl = userCollectionRef.doc('1rOnF8MYQ4jx2zY6rXyc').collection('matches')

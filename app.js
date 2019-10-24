@@ -10,10 +10,38 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var relationsRouter = require('./routes/relations');
 var app = express();
+const session = require('express-session');
 
 require('dotenv').config()
 
+var expiryDate = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
+app.use(session({
+  name: 'serversessionforassign2',
+  secret: 'thisisasecret',
+  saveUninitialized: false,   //created and not modified sessions
+  resave: false,              //if the request has no changes on the session
+  cookie: {
+    secure : false,
+    maxAge : 1000 * 60 * 60 * 1,
+    httpOnly: true        //http only so the clinet script cannot mess with it
+  }
 
+}))
+
+app.use(function (req, res, next) {
+  if (req.session.flash) {
+    res.locals.flash = req.session.flash
+    delete req.session.flash
+  }
+  if (req.session.loggedin) {
+    res.locals.loggedin = req.session.loggedin
+  }
+  next()
+})
+app.use(function (req, res, next) {
+  res.locals.session = req.session
+  next()
+})
 // cross Origin problem to access routes from any domain
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");

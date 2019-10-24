@@ -11,6 +11,7 @@
     "cookie-parser": "~1.4.4",
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
+    "express-session": "^1.17.0",
     "firebase-admin": "^8.6.1",
     "firebase-service": "^4.0.77",
     "morgan": "~1.9.1"
