@@ -107,7 +107,6 @@ const getAllUsers = async (req, res) => {
         querySnapshot.forEach(function (doc) {
             // doc.data() is never undefined for query doc snapshots
             tempArray.push(doc.data())
-            console.log(validPassword('password'))
         });
         res.send(tempArray);
     });
