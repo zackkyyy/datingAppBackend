@@ -14,7 +14,7 @@ const userCollectionRef = database.collection('users');
 router.route('/').get(userController.getAllUsers);
 router.route('/createTest').post(userController.createUser)
 router.route('/create').post(userController.createUser)
-router.route('/update/:user_id').post(userController.updateUser)
+router.route('/update/').post(userController.updateUser)
 router.route('/find/:findBy/:searchWord').get(userController.findUser)
 router.route('/deleteAll').get(userController.deleteAllUsers)
 router.route('/validateSignIn').post(userController.validateSignIn)
@@ -36,9 +36,6 @@ router.route('/this').get(function (req, res) {
 
 const multer = Multer({
     storage: Multer.memoryStorage(),
-    // limits: {
-    //     fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
-    // }
 });
 
 
@@ -80,12 +77,7 @@ const uploadImageToStorage = (file) => {
             }
         });
 
-        blobStream.on('finish', () => {
-            // The public URL can be used to directly access the file via HTTP.
-            const url = format(`https://storage.googleapis.com/${bucket.name}/images/${fileUpload.name}`);
-            console.log(url)
-            resolve(url);
-        });
+
 
         blobStream.end(file.buffer);
     });

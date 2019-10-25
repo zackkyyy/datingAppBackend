@@ -39,7 +39,7 @@ const createUser = async (req, res) => {
     res.send('200')
 }
 const updateUser = async (req, res) => {
-    if (req.session.id == req.params.user_id){
+    if (req.session.id == req.body.user_id){
         console.log(req.params.user_id)
         let id = req.params.user_id
         let user = {
@@ -94,13 +94,13 @@ const validateSignIn = async (req, res) => {
                         })
 
                     } else {
-                        res.send('password wrong')
+                        res.status(500).send{('password wrong')}
                     }
                 }
             });
             if (!found) {
                 console.log('not found')
-                res.send('not found')
+                res.status(500).send{('User does not exist')}
             }
         })
         .catch(err => {
