@@ -47,10 +47,12 @@ const multer = Multer({
 // })
 
 router.post('/upload',multer.single('file'), (req,res)=>{
+    console.log(req.session)
     console.log('Uploading Image .....');
     let file = req.file
+    let userId = req.session.id
     if(file){
-        uploadImageToStorage(file, req).then((success)=>{
+        uploadImageToStorage(file, userId).then((success)=>{
             res.sendStatus(200)
         }).catch((err)=>{
             console.log(err)
@@ -63,13 +65,12 @@ router.post('/upload',multer.single('file'), (req,res)=>{
  * Upload the image file to Google Storage
  * @param {File} file object that will be uploaded to Google Storage
  */
-const uploadImageToStorage = (file, req) => {
+const uploadImageToStorage = (file, userId) => {
     return new Promise((resolve, reject) => {
         if (!file) {
             reject('No image file');
         }
-        console.log(req.session)
-        let newFileName = req.session.userID+ "_" +req.session.username ;
+        let newFileName = userId+ "_" ;
 
         let fileUpload = bucket.file(newFileName);
 
