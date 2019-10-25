@@ -1,29 +1,21 @@
-let admin = require('firebase-service')
-let database = require('../DBparser/DbParser')
+let db = require('../DBparser/DbParser')
 let crypto = require('crypto')
 let ThisSalt = process.env.SALT
 let thisHash = '';
+
+var database = db.admin.firestore()
 const userCollectionRef = database.collection('users');
-
-function md5(string) {
-    return crypto.createHash('md5').update(string).digest('hex');
-}
-
-//this.hash = crypto.pbkdf2Sync(doc.data().password ,this.salt , 1000,64  ,`sha512`).toString(`hex`)
 
 setPassword = function (password) {
     return thisHash = crypto.pbkdf2Sync(password, ThisSalt,
         1000, 64, `sha512`).toString(`hex`)
 }
-
 validPassword = function (passwordInDatabase, password) {
     var hash = crypto.pbkdf2Sync(password,
         ThisSalt, 1000, 64, `sha512`).toString(`hex`)
     console.log(hash)
     return passwordInDatabase === hash
 }
-
-
 const createUser = async (req, res) => {
     let user = {
         first: (req.body.firstName || ""),
@@ -46,23 +38,25 @@ const createUser = async (req, res) => {
     })
     res.send('200')
 }
-
 const updateUser = async (req, res) => {
-    let id = req.params.id
-    let user = {
-        first: (req.body.firstName || ""),
-        last: (req.body.lastName || ""),
-        userName: (req.body.userName || ""),
-        email: (req.body.email || ""),
-        dateOfBirth: (req.body.dateOfBirth || ""),
-        description: (req.body.description || ""),
-        title: (req.body.title || ""),
-        image: (req.body.image || "")
+    if (req.session.id == req.params.user_id){
+        console.log(req.params.user_id)
+        let id = req.params.user_id
+        let user = {
+            first: (req.body.firstName || ""),
+            last: (req.body.lastName || ""),
+            userName: (req.body.userName || ""),
+            dateOfBirth: (req.body.dateOfBirth || ""),
+            description: (req.body.description || ""),
+            title: (req.body.title || ""),
+            image: (req.body.image || ""),
+            gender:(req.body.gender|| "")
+        }
+        userCollectionRef.doc(id).update(user)
+            .then(ref => {
+                console.log(200)
+            }).catch(res.send(404))
     }
-    userCollectionRef.doc(id).update(user)
-        .then(ref => {
-            console.log(200)
-        }).catch(res.send(404))
 }
 const deleteAllUsers = async (req, res) => {
     userCollectionRef.listDocuments().then(val => {
@@ -73,7 +67,9 @@ const deleteAllUsers = async (req, res) => {
     })
 }
 const logOut = async (req,res)=>{
+    console.log('here')
     req.session.loggedin= false
+    console.log(req.session.loggedin)
     req.session.destroy()
     res.sendStatus(200)
 }
@@ -88,10 +84,14 @@ const validateSignIn = async (req, res) => {
                     found = true;
                     console.log('found')
                     if (validPassword(doc.data().password, password)) {
-                        req.session.id = doc.data().id
-                        req.session.username = doc.data().username
+                        req.session.id = doc.id
+                        req.session.username = doc.data().email
                         req.session.loggedin = true
-                        res.sendStatus(200 )
+                        console.log(req.session)
+                        res.status(200).send({
+                            userId : doc.id,
+                            username : doc.data().userName
+                        })
 
                     } else {
                         res.send('password wrong')
@@ -112,8 +112,6 @@ const validateSignIn = async (req, res) => {
 }
 const getAllUsers = async (req, res) => {
     let tempArray = [];
-    req.session.user = "s"
-    req.session.loggedin = true
     console.log(req.session)
     userCollectionRef.get().then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {

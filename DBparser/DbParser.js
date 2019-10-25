@@ -1,6 +1,14 @@
 let admin = require ("firebase-admin")
-require('dotenv').config()
+const googleStorage = require('@google-cloud/storage');
 
+require('dotenv').config()
+//
+// var firebaseConfig = {
+//         apiKey: 'AIzaSyD5vT40_Lal9ZHjGh_7o-VPGVogZ9wzf5s ',
+//         authDomain: 'https://soviet-hinder-apis.herokuapp.com/',
+//         databaseURL: 'Soviet-hinder',
+//         storageBucket:'gs://soviet-hinder.appspot.com'
+// };
 
 admin.initializeApp({
         credential : admin.credential.cert({
@@ -14,8 +22,14 @@ admin.initializeApp({
         token_uri: process.env.FIREBASE_TOKEN_URI,
         auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
         client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
+        storageBucket:'gs://soviet-hinder.appspot.com',
+        apiKey: 'AIzaSyD5vT40_Lal9ZHjGh_7o-VPGVogZ9wzf5s '
     }),
 })
-let db = admin.firestore()
 
-module.exports = db;
+var storage = admin.storage();
+
+module.exports = {
+        admin,
+        storage
+};

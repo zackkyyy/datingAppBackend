@@ -1,6 +1,8 @@
 let express = require('express');
 let router = express.Router();
-let database = require('../DBparser/DbParser.js')
+let db = require('../DBparser/DbParser.js')
+
+const database = db.admin.firestore()
 const userCollectionRef = database.collection('users');
 
 router.route('/').get(function (req,res) {

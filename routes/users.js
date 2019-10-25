@@ -1,7 +1,12 @@
 let express = require('express');
 let router = express.Router();
-let database = require('../DBparser/DbParser.js')
+let db = require('../DBparser/DbParser.js')
 let userController =require('../conrollers/userController')
+const Multer = require('multer')
+
+
+const database = db.admin.firestore()
+const bucket = db.storage.bucket('gs://soviet-hinder.appspot.com')
 
 const userCollectionRef = database.collection('users');
 
@@ -14,7 +19,6 @@ router.route('/find/:findBy/:searchWord').get(userController.findUser)
 router.route('/deleteAll').get(userController.deleteAllUsers)
 router.route('/validateSignIn').post(userController.validateSignIn)
 router.route('/logout').get(userController.logOut)
-
 router.route('/this').get(function (req, res) {
     let subColl = userCollectionRef.doc('1rOnF8MYQ4jx2zY6rXyc').collection('matches')
     let tempArray = [];
@@ -30,7 +34,61 @@ router.route('/this').get(function (req, res) {
 })
 
 
+const multer = Multer({
+    storage: Multer.memoryStorage(),
+    // limits: {
+    //     fileSize: 5 * 1024 * 1024 // no larger than 5mb, you can change as needed.
+    // }
+});
 
 
+
+//
+// const  upload = Multer({
+//     dest:'./uploads'
+// })
+
+router.post('/upload',multer.single('file'), (req,res)=>{
+    console.log('Upload Image');
+    let file = req.file
+    if(file){
+        uploadImageToStorage(file).then((success)=>{
+            res.sendStatus(200)
+        }).catch((err)=>{
+            console.log(err)
+        })
+    }
+})
+
+
+/**
+ * Upload the image file to Google Storage
+ * @param {File} file object that will be uploaded to Google Storage
+ */
+const uploadImageToStorage = (file) => {
+    return new Promise((resolve, reject) => {
+        if (!file) {
+            reject('No image file');
+        }
+        let newFileName = `${file.originalname}_${Date.now()}`;
+
+        let fileUpload = bucket.file(newFileName);
+
+        const blobStream = fileUpload.createWriteStream({
+            metadata: {
+                contentType: file.mimetype
+            }
+        });
+
+        blobStream.on('finish', () => {
+            // The public URL can be used to directly access the file via HTTP.
+            const url = format(`https://storage.googleapis.com/${bucket.name}/images/${fileUpload.name}`);
+            console.log(url)
+            resolve(url);
+        });
+
+        blobStream.end(file.buffer);
+    });
+}
 
 module.exports = router;
