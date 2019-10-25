@@ -7,6 +7,7 @@ const Multer = require('multer')
 
 const database = db.admin.firestore()
 const bucket = db.storage.bucket('gs://soviet-hinder.appspot.com')
+//const bucket  = Projectbucket.file('images')
 
 const userCollectionRef = database.collection('users');
 
@@ -46,10 +47,10 @@ const multer = Multer({
 // })
 
 router.post('/upload',multer.single('file'), (req,res)=>{
-    console.log('Upload Image');
+    console.log('Uploading Image .....');
     let file = req.file
     if(file){
-        uploadImageToStorage(file).then((success)=>{
+        uploadImageToStorage(file, req).then((success)=>{
             res.sendStatus(200)
         }).catch((err)=>{
             console.log(err)
@@ -62,12 +63,13 @@ router.post('/upload',multer.single('file'), (req,res)=>{
  * Upload the image file to Google Storage
  * @param {File} file object that will be uploaded to Google Storage
  */
-const uploadImageToStorage = (file) => {
+const uploadImageToStorage = (file, req) => {
     return new Promise((resolve, reject) => {
         if (!file) {
             reject('No image file');
         }
-        let newFileName = `${file.originalname}_${Date.now()}`;
+        console.log(req.session)
+        let newFileName = req.session.userID+ "_" +req.session.username ;
 
         let fileUpload = bucket.file(newFileName);
 
@@ -76,7 +78,6 @@ const uploadImageToStorage = (file) => {
                 contentType: file.mimetype
             }
         });
-
 
 
         blobStream.end(file.buffer);
