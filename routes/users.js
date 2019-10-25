@@ -47,10 +47,10 @@ const multer = Multer({
 // })
 
 router.post('/upload',multer.single('file'), (req,res)=>{
-    console.log(req.session)
+    console.log(req)
     console.log('Uploading Image .....');
     let file = req.file
-    let userId = req.session.id
+    let userId = req.body.userID
     if(file){
         uploadImageToStorage(file, userId).then((success)=>{
             res.sendStatus(200)
@@ -70,7 +70,7 @@ const uploadImageToStorage = (file, userId) => {
         if (!file) {
             reject('No image file');
         }
-        let newFileName = userId+ "_" ;
+        let newFileName = userId ;
 
         let fileUpload = bucket.file(newFileName);
 
@@ -79,8 +79,6 @@ const uploadImageToStorage = (file, userId) => {
                 contentType: file.mimetype
             }
         });
-
-
         blobStream.end(file.buffer);
     });
 }
