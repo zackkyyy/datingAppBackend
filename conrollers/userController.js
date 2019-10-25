@@ -94,13 +94,17 @@ const validateSignIn = async (req, res) => {
                         })
 
                     } else {
-                        res.status(500).send{('password wrong')}
+                        res.status(500).send({
+                            message : 'Wrong password'
+                        })
                     }
                 }
             });
             if (!found) {
                 console.log('not found')
-                res.status(500).send{('User does not exist')}
+                res.status(500).send({
+                    message : 'User does not exist'
+                })
             }
         })
         .catch(err => {
