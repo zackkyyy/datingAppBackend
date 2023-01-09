@@ -14,7 +14,7 @@
     "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "express-session": "^1.17.0",
-    "firebase-admin": "^8.6.1",
+    "firebase-admin": "^11.4.1",
     "firebase-service": "^4.0.77",
     "formidable": "^1.2.1",
     "morgan": "~1.9.1",
